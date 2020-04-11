@@ -81,10 +81,17 @@ public class Server {
         ShutdownHook.getInstance().addDisposable(coordinator);
         ShutdownHook.getInstance().addDisposable(rpcServer);
 
-        //127.0.0.1 and 0.0.0.0 are not valid here.
-        if (NetUtil.isValidIp(parameterParser.getHost(), false)) {
-            XID.setIpAddress(parameterParser.getHost());
-        } else {
+		String host = "";
+
+		// 127.0.0.1 and 0.0.0.0 are valid here. modify by Bosco.Liao
+		if (NetUtil.isValidIp((host = parameterParser.getHost()), true)) {
+			XID.setIpAddress(host);
+		}
+		// 127.0.0.1 and 0.0.0.0 are not valid here. add by Bosco.Liao
+		else if (NetUtil.isValidIp((host = parameterParser.getConfigHost("127.0.0.1")), false)) {
+			XID.setIpAddress(host);
+		}
+        else {
             XID.setIpAddress(NetUtil.getLocalIp());
         }
         XID.setPort(rpcServer.getListenPort());
